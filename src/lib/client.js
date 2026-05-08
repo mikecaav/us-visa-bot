@@ -40,6 +40,25 @@ export class VisaHttpClient {
       }));
   }
 
+  async getCurrentAppointmentDate(headers, scheduleId) {
+    const url = `${this.baseUri}/schedule/${scheduleId}`;
+    const response = await fetch(url, { headers });
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    const text = $('body').text();
+    const match = text.match(/Consular Appointment[:\s]+([0-9]{1,2}\s+\w+,\s+\d{4})/i)
+      || text.match(/Consular Appointment[:\s]+(\w+\s+[0-9]{1,2},\s+\d{4})/i);
+
+    if (match) {
+      const parsed = new Date(match[1]);
+      if (!isNaN(parsed)) {
+        return parsed.toISOString().split('T')[0];
+      }
+    }
+    return null;
+  }
+
   async checkAvailableDate(headers, scheduleId, facilityId) {
     const url = `${this.baseUri}/schedule/${scheduleId}/appointment/days/${facilityId}.json?appointments[expedite]=false`;
     

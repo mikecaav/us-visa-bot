@@ -7,9 +7,16 @@ export function getConfig() {
     email: process.env.EMAIL,
     password: process.env.PASSWORD,
     scheduleId: process.env.SCHEDULE_ID,
-    facilityId: process.env.FACILITY_ID,
+    facilityIds: (process.env.FACILITY_IDS || '').split(',').map(s => s.trim()).filter(Boolean),
     countryCode: process.env.COUNTRY_CODE,
-    refreshDelay: Number(process.env.REFRESH_DELAY || 3)
+    refreshDelay: Number(process.env.REFRESH_DELAY || 3600),
+    telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
+    telegramChatId: process.env.TELEGRAM_CHAT_ID || '',
+    minDateDifference: Number(process.env.MIN_DATE_DIFFERENCE || 7),
+    authCooldown: Number(process.env.AUTH_COOLDOWN || 300),
+    maxLoginFailures: Number(process.env.MAX_LOGIN_FAILURES || 3),
+    activeHoursStart: Number(process.env.ACTIVE_HOURS_START || 7),
+    activeHoursEnd: Number(process.env.ACTIVE_HOURS_END || 23),
   };
 
   validateConfig(config);
@@ -17,11 +24,15 @@ export function getConfig() {
 }
 
 function validateConfig(config) {
-  const required = ['email', 'password', 'scheduleId', 'facilityId', 'countryCode'];
+  const required = ['email', 'password', 'scheduleId', 'countryCode'];
   const missing = required.filter(key => !config[key]);
 
+  if (config.facilityIds.length === 0) {
+    missing.push('facilityIds');
+  }
+
   if (missing.length > 0) {
-    console.error(`Missing required environment variables: ${missing.map(k => k.toUpperCase()).join(', ')}`);
+    console.error(`Missing required environment variables: ${missing.map(k => k === 'facilityIds' ? 'FACILITY_IDS' : k.toUpperCase()).join(', ')}`);
     process.exit(1);
   }
 }

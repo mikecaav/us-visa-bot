@@ -11,7 +11,7 @@ program
 program
   .command('bot')
   .description('Monitor and reschedule visa appointments')
-  .requiredOption('-c, --current <date>', 'current booked date')
+  .option('-c, --current <date>', 'current booked date (auto-detected from site if omitted)')
   .option('-t, --target <date>', 'target date to stop at')
   .option('-m, --min <date>', 'minimum date acceptable')
   .option('--dry-run', 'only log what would be booked without actually booking')
@@ -19,7 +19,7 @@ program
 
 // Default command for backward compatibility
 program
-  .requiredOption('-c, --current <date>', 'current booked date')
+  .option('-c, --current <date>', 'current booked date (auto-detected from site if omitted)')
   .option('-t, --target <date>', 'target date to stop at')
   .option('-m, --min <date>', 'minimum date acceptable')
   .option('--dry-run', 'only log what would be booked without actually booking')
