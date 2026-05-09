@@ -1,10 +1,11 @@
 import { VisaHttpClient } from './client.js';
 import { createTelegramNotifier } from './telegram.js';
+import { createPushoverNotifier } from './pushover.js';
 import { getFacilityName } from './facilities.js';
 import { log, sleep } from './utils.js';
 
-const FACILITY_REQUEST_JITTER_MIN = 5;
-const FACILITY_REQUEST_JITTER_MAX = 15;
+const FACILITY_REQUEST_BASE_SECONDS = 2;
+const FACILITY_REQUEST_JITTER_PCT = 0.3;
 
 export class Bot {
   constructor(config, options = {}) {
@@ -12,6 +13,7 @@ export class Bot {
     this.dryRun = options.dryRun || false;
     this.client = new VisaHttpClient(this.config.countryCode, this.config.email, this.config.password);
     this.telegram = createTelegramNotifier(config.telegramBotToken, config.telegramChatId);
+    this.pushover = createPushoverNotifier(config.pushoverUserKey, config.pushoverAppToken);
   }
 
   async initialize() {
@@ -38,8 +40,9 @@ export class Bot {
       );
 
       if (i < this.config.facilityIds.length - 1) {
-        const jitter = FACILITY_REQUEST_JITTER_MIN + Math.random() * (FACILITY_REQUEST_JITTER_MAX - FACILITY_REQUEST_JITTER_MIN);
-        await sleep(jitter);
+        const jitter = FACILITY_REQUEST_BASE_SECONDS * FACILITY_REQUEST_JITTER_PCT;
+        const delay = FACILITY_REQUEST_BASE_SECONDS + (Math.random() * 2 - 1) * jitter;
+        await sleep(delay);
       }
 
       if (!dates || dates.length === 0) {
@@ -70,6 +73,7 @@ export class Bot {
     if (bestCandidate) {
       log(`best candidate: ${bestCandidate.date} at ${getFacilityName(bestCandidate.facilityId)}`);
       await this.telegram.notifyDateFound(bestCandidate.date, currentBookedDate, bestCandidate.facilityId);
+      await this.pushover.notifyDateFoundEmergency(bestCandidate.date, getFacilityName(bestCandidate.facilityId));
     }
 
     return { bestCandidate, perFacility };

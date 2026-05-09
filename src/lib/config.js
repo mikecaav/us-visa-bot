@@ -17,6 +17,8 @@ export function getConfig() {
     maxLoginFailures: Number(process.env.MAX_LOGIN_FAILURES || 3),
     activeHoursStart: Number(process.env.ACTIVE_HOURS_START || 7),
     activeHoursEnd: Number(process.env.ACTIVE_HOURS_END || 23),
+    pushoverUserKey: process.env.PUSHOVER_USER_KEY || '',
+    pushoverAppToken: process.env.PUSHOVER_APP_TOKEN || '',
   };
 
   validateConfig(config);
