@@ -6,7 +6,7 @@ export function sleep(seconds) {
 
 export function randomizedDelay(baseSeconds) {
   const jitter = baseSeconds * 0.3;
-  const delay = baseSeconds + (Math.random() * 2 - 1) * jitter;
+  const delay = baseSeconds - Math.random() * jitter;
   return Math.round(delay);
 }
 
