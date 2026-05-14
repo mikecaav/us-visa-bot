@@ -2,24 +2,27 @@ import fetch from 'node-fetch';
 import { log } from './utils.js';
 import { getFacilityName } from './facilities.js';
 
-export function createTelegramNotifier(botToken, chatId) {
-  const enabled = Boolean(botToken && chatId);
+export function createTelegramNotifier(botToken, chatIds) {
+  const ids = Array.isArray(chatIds) ? chatIds : (chatIds ? [chatIds] : []);
+  const enabled = Boolean(botToken && ids.length > 0);
 
   if (enabled) {
-    log('Telegram notifications enabled');
+    log(`Telegram notifications enabled (${ids.length} recipient${ids.length > 1 ? 's' : ''})`);
   }
 
   async function send(text) {
     if (!enabled) return;
-    try {
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' })
-      });
-    } catch (err) {
-      log(`Telegram notification failed: ${err.message}`);
-    }
+    await Promise.all(ids.map(async (id) => {
+      try {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: id, text, parse_mode: 'Markdown' })
+        });
+      } catch (err) {
+        log(`Telegram notification failed for ${id}: ${err.message}`);
+      }
+    }));
   }
 
   return {

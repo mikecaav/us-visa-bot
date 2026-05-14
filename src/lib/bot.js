@@ -12,7 +12,7 @@ export class Bot {
     this.config = config;
     this.dryRun = options.dryRun || false;
     this.client = new VisaHttpClient(this.config.countryCode, this.config.email, this.config.password);
-    this.telegram = createTelegramNotifier(config.telegramBotToken, config.telegramChatId);
+    this.telegram = createTelegramNotifier(config.telegramBotToken, config.telegramChatIds);
     this.pushover = createPushoverNotifier(config.pushoverUserKey, config.pushoverAppToken);
   }
 

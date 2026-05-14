@@ -9,7 +9,7 @@ const COOLDOWN = 3600; // 1 hour in seconds
 export async function botCommand(options) {
   const config = getConfig();
   const bot = new Bot(config, { dryRun: options.dryRun });
-  const telegram = createTelegramNotifier(config.telegramBotToken, config.telegramChatId);
+  const telegram = createTelegramNotifier(config.telegramBotToken, config.telegramChatIds);
   let currentBookedDate = options.current;
   const targetDate = options.target;
   const minDate = options.min;

@@ -11,7 +11,7 @@ export function getConfig() {
     countryCode: process.env.COUNTRY_CODE,
     refreshDelay: Number(process.env.REFRESH_DELAY || 3600),
     telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
-    telegramChatId: process.env.TELEGRAM_CHAT_ID || '',
+    telegramChatIds: (process.env.TELEGRAM_CHAT_ID || '').split(',').map(s => s.trim()).filter(Boolean),
     minDateDifference: Number(process.env.MIN_DATE_DIFFERENCE || 7),
     authCooldown: Number(process.env.AUTH_COOLDOWN || 300),
     maxLoginFailures: Number(process.env.MAX_LOGIN_FAILURES || 3),

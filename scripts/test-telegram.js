@@ -3,7 +3,7 @@ import { createTelegramNotifier } from '../src/lib/telegram.js';
 import { log } from '../src/lib/utils.js';
 
 const config = getConfig();
-const telegram = createTelegramNotifier(config.telegramBotToken, config.telegramChatId);
+const telegram = createTelegramNotifier(config.telegramBotToken, config.telegramChatIds);
 
 const currentDate = '2026-08-15';
 
