@@ -18,7 +18,7 @@ export function createPushoverNotifier(userKey, appToken) {
       message,
       title: title || 'Visa Bot',
       priority: String(priority),
-      sound: 'persistent',
+      sound: 'bugle',
     });
 
     if (priority === 2) {

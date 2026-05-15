@@ -27,7 +27,7 @@ export function createTelegramNotifier(botToken, chatIds) {
 
   return {
     notifyDateFound: (date, currentDate, facilityId) =>
-      send(`🟢 *Earlier date found!*\nDate: ${date}\nFacility: ${getFacilityName(facilityId)}\nCurrent appointment: ${currentDate}\n\n_Attempting to book..._`),
+      send(`🚨 *EARLIER DATE — BOOK MANUALLY NOW*\nDate: ${date}\nFacility: ${getFacilityName(facilityId)}\nCurrent appointment: ${currentDate}\n\n_Bot does NOT book. Open the visa site and reschedule yourself._`),
     notifyCycleStatus: (perFacility, currentDate, bestCandidate, nextRun) => {
       const header = bestCandidate
         ? `🟢 *Cycle complete — earlier date found!*`

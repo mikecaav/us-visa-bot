@@ -63,21 +63,7 @@ export async function botCommand(options) {
       await telegram.notifyCycleStatus(perFacility, currentBookedDate, bestCandidate, nextRun);
 
       if (bestCandidate) {
-        const bookedTime = await bot.bookAppointment(sessionHeaders, bestCandidate);
-
-        if (bookedTime) {
-          await telegram.notifyBookingSuccess(bestCandidate.date, bookedTime, bestCandidate.facilityId);
-          log(`Booked ${bestCandidate.date} at ${getFacilityName(bestCandidate.facilityId)}. Continuing to look for earlier dates.`);
-          currentBookedDate = bestCandidate.date;
-          options = { ...options, current: currentBookedDate };
-
-          if (targetDate && bestCandidate.date <= targetDate) {
-            const msg = `Target date reached (${targetDate}). Stopping bot.`;
-            log(msg);
-            await telegram.notifyBotStopped(msg);
-            process.exit(0);
-          }
-        }
+        log(`Earlier date found at ${getFacilityName(bestCandidate.facilityId)}: ${bestCandidate.date}. Notification sent — book manually.`);
       }
 
       log(`waiting ${delay} seconds before next check`);
