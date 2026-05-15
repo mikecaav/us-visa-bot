@@ -52,15 +52,18 @@ export async function botCommand(options) {
         continue;
       }
 
+      await telegram.notifyCycleStarted();
+      const cycleStart = Date.now();
       const { bestCandidate, perFacility } = await bot.checkAvailableDate(
         sessionHeaders,
         currentBookedDate,
         minDate
       );
+      const durationSeconds = (Date.now() - cycleStart) / 1000;
 
       const delay = randomizedDelay(config.refreshDelay);
       const nextRun = computeNextRunTime(delay, config.activeHoursStart, config.activeHoursEnd);
-      await telegram.notifyCycleStatus(perFacility, currentBookedDate, bestCandidate, nextRun);
+      await telegram.notifyCycleStatus(perFacility, currentBookedDate, bestCandidate, nextRun, durationSeconds);
 
       if (bestCandidate) {
         log(`Earlier date found at ${getFacilityName(bestCandidate.facilityId)}: ${bestCandidate.date}. Notification sent — book manually.`);

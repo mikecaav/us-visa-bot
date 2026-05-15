@@ -4,7 +4,7 @@ import { createPushoverNotifier } from './pushover.js';
 import { getFacilityName } from './facilities.js';
 import { log, sleep } from './utils.js';
 
-const FACILITY_REQUEST_BASE_SECONDS = 2;
+const FACILITY_REQUEST_BASE_SECONDS = 0.3;
 const FACILITY_REQUEST_JITTER_PCT = 0.3;
 
 export class Bot {
